@@ -1,4 +1,31 @@
 %%% vim:foldmethod=marker
+%
+% Sample Run:
+%
+% $ erlc topic.erl                                          # compile the program
+% $ erl -pa */ebin                                          # start the Erlang shell, adding the RabbitMQ libraries to the code path.
+%
+% 1> topic:start_link().                                    % starts the gen_server.
+% {ok,<0.60.0>}
+% 2> topic:monitor_msg(<<"*.critical">>).                   % tells the gen_server to listen for critical messages from any component.
+%  [x] Listening for *.critical messages...
+% ok
+% 3> topic:monitor_msg(<<"engine.*">>).                     % tells the gen_server to listen for any message from the engine.
+%  [x] Listening for engine.* messages...
+% ok
+% 4> topic:send_msg(<<"engine.info">>, <<"ok">>).           % let someone know the engine is ok.
+%  [x] Sent engine.info:'ok'.
+% ok
+%  [x] Received engine.info:'ok'.
+% 5> topic:send_msg(<<"transmission.info">>, <<"ok">>).     % let someone know the transmission is ok. (No one cares.)
+%  [x] Sent transmission.info:'ok'.
+% ok
+% 6> topic:send_msg(<<"transmission.critical">>, <<"ok">>). % let someone know the tranny's gone kablooey. (Now they care.)
+%  [x] Sent transmission.critical:'ok'.
+% ok
+%  [x] Received transmission.critical:'ok'.
+% 7>
+
 -module(topic).  % {{{1
 
 -behaviour(gen_server).
